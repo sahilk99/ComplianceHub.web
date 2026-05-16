@@ -1,1 +1,38 @@
-<p>navbar works!</p>
+<header class="navbar">
+  <div class="page-title">
+    <h2>{{ pageTitle }}</h2>
+  </div>
+
+  <div class="navbar-actions">
+    <div class="notification-wrapper">
+      <button class="icon-btn" (click)="toggleNotifications()" aria-label="Notifications">
+        <span class="icon">🔔</span>
+        <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+      </button>
+
+      <!-- Dropdown -->
+      <div class="notification-dropdown" *ngIf="isNotificationOpen">
+        <div class="dropdown-header">
+          <h3>Notifications</h3>
+          <button class="mark-read-btn" (click)="markAllAsRead()" *ngIf="unreadCount > 0">
+            Mark all as read
+          </button>
+        </div>
+
+        <div class="dropdown-body">
+          <div class="notification-item" *ngFor="let notif of notifications" [class.unread]="!notif.isRead">
+            <div class="notif-content">
+              <p class="message">{{ notif.message }}</p>
+              <span class="time">{{ notif.timeAgo }}</span>
+            </div>
+            <div class="unread-dot" *ngIf="!notif.isRead"></div>
+          </div>
+          
+          <div class="empty-state" *ngIf="notifications.length === 0">
+            No notifications
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

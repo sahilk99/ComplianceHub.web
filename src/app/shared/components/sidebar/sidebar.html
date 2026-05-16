@@ -1,1 +1,47 @@
-<p>sidebar works!</p>
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <span class="logo-icon">C</span>
+      <h1>ComplianceHub</h1>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <!-- Visible to all roles -->
+    <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+      <span class="icon">📊</span>
+      <span class="text">Dashboard</span>
+    </a>
+
+    <a routerLink="/documents" routerLinkActive="active" class="nav-item">
+      <span class="icon">📄</span>
+      <span class="text">Documents</span>
+    </a>
+
+    <!-- Visible to Admin and Auditor -->
+    <a *ngIf="userRole === 'Admin' || userRole === 'Auditor'" routerLink="/audit-logs" routerLinkActive="active" class="nav-item">
+      <span class="icon">📋</span>
+      <span class="text">Audit Logs</span>
+    </a>
+
+    <!-- Visible to Admin ONLY -->
+    <a *ngIf="userRole === 'Admin'" routerLink="/documents/new" routerLinkActive="active" class="nav-item">
+      <span class="icon">➕</span>
+      <span class="text">Add Document</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer" *ngIf="currentUser">
+    <div class="user-info">
+      <div class="avatar">{{ currentUser.name.charAt(0) | uppercase }}</div>
+      <div class="details">
+        <span class="name">{{ currentUser.name }}</span>
+        <span class="role-badge" [ngClass]="userRole.toLowerCase()">{{ userRole }}</span>
+      </div>
+    </div>
+    <button class="logout-btn" (click)="logout()" title="Logout">
+      <span class="icon">🚪</span>
+      <span class="text">Logout</span>
+    </button>
+  </div>
+</aside>
