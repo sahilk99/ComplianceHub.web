@@ -1,4 +1,5 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
@@ -9,9 +10,10 @@ import { User } from '../models/user.model';
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private platformId = inject(PLATFORM_ID);
   private jwtHelper = new JwtHelperService();
   private readonly TOKEN_KEY = 'compliance_token';
-  private apiUrl = 'http://localhost:5000/api/auth';
+  private apiUrl = 'https://localhost:7123/api/auth';
 
   private currentUserSubject = new BehaviorSubject<User | null>(this.getCurrentUser());
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -20,7 +22,9 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/login`, { email, password }).pipe(
       tap(response => {
         if (response && response.token) {
-          localStorage.setItem(this.TOKEN_KEY, response.token);
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.setItem(this.TOKEN_KEY, response.token);
+          }
           this.currentUserSubject.next(this.getCurrentUser());
         }
       })
@@ -32,11 +36,16 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.TOKEN_KEY);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem(this.TOKEN_KEY);
+    }
     this.currentUserSubject.next(null);
   }
 
   getCurrentUser(): User | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null;
+    }
     const token = localStorage.getItem(this.TOKEN_KEY);
     if (token && !this.jwtHelper.isTokenExpired(token)) {
       const decoded = this.jwtHelper.decodeToken(token);
@@ -54,6 +63,9 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
+    if (!isPlatformBrowser(this.platformId)) {
+      return false;
+    }
     const token = localStorage.getItem(this.TOKEN_KEY);
     return !!token && !this.jwtHelper.isTokenExpired(token);
   }
