@@ -1,0 +1,85 @@
+.document-detail-container {
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.detail-card, .audit-trail-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.detail-item {
+  margin-bottom: 10px;
+}
+
+.detail-item label {
+  font-weight: bold;
+  color: #666;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.detail-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.audit-list {
+  margin-top: 15px;
+}
+
+.audit-item {
+  border-left: 3px solid #007bff;
+  padding-left: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.audit-item:last-child {
+  border-bottom: none;
+}
+
+.audit-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.audit-time {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.85em;
+  color: white;
+}
+
+.action-create { background-color: #28a745; }
+.action-update { background-color: #ffc107; color: #000; }
+.action-delete { background-color: #dc3545; }
+
+.loading-state {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
