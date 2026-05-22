@@ -2,12 +2,12 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login';
 import { AppLayoutComponent } from './core/layout/app-layout/app-layout';
 import { DashboardComponent } from './features/dashboard/dashboard';
-import { DocumentsComponent } from './features/documents/documents';
+import { DocumentList } from './features/documents/document-list/document-list';
+import { DocumentDetail } from './features/documents/document-detail/document-detail';
+import { DocumentForm } from './features/documents/document-form/document-form';
 import { AuditLogsComponent } from './features/audit-logs/audit-logs';
 import { UnauthorizedComponent } from './features/auth/unauthorized/unauthorized';
 import { authGuard } from './core/guards/auth.guard';
-// Note: Assuming RoleGuard exists or is similar, if not we just use authGuard.
-// From user prompt: "AuthGuard and RoleGuard exist as functional guards"
 import { roleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
@@ -21,10 +21,20 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'documents', component: DocumentsComponent },
+      { path: 'documents', component: DocumentList },
       { 
         path: 'documents/new', 
-        component: DocumentsComponent, // Placeholder mapping
+        component: DocumentForm,
+        canActivate: [roleGuard],
+        data: { roles: ['Admin'] }
+      },
+      { 
+        path: 'documents/:id', 
+        component: DocumentDetail 
+      },
+      { 
+        path: 'documents/:id/edit', 
+        component: DocumentForm,
         canActivate: [roleGuard],
         data: { roles: ['Admin'] }
       },

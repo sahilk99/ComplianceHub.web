@@ -1,1 +1,65 @@
-<p>document-detail works!</p>
+<div class="document-detail-container" *ngIf="document && !isLoading">
+  <div class="header-actions">
+    <button routerLink="/documents" class="btn btn-secondary">&larr; Back to List</button>
+    <a *ngIf="isAdmin" [routerLink]="['/documents', document.id, 'edit']" class="btn btn-warning">Edit Document</a>
+  </div>
+
+  <div class="detail-card">
+    <h2>{{ document.title }}</h2>
+    
+    <div class="detail-grid">
+      <div class="detail-item">
+        <label>Category</label>
+        <p>{{ document.category }}</p>
+      </div>
+      <div class="detail-item">
+        <label>Department</label>
+        <p>{{ document.departmentName }}</p>
+      </div>
+      <div class="detail-item">
+        <label>Uploaded By</label>
+        <p>{{ document.uploadedByName }}</p>
+      </div>
+      <div class="detail-item">
+        <label>Expiry Date</label>
+        <p>{{ document.expiryDate | date:'dd MMM yyyy' }}</p>
+      </div>
+      <div class="detail-item">
+        <label>Status</label>
+        <p><app-status-badge [status]="document.status"></app-status-badge></p>
+      </div>
+      <div class="detail-item">
+        <label>Created At</label>
+        <p>{{ document.createdAt | date:'medium' }}</p>
+      </div>
+      <div class="detail-item full-width">
+        <label>File URL</label>
+        <p><a [href]="document.fileUrl" target="_blank">{{ document.fileUrl }}</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="audit-trail-card">
+    <h3>Audit Trail</h3>
+    <div class="audit-list">
+      <div *ngIf="auditLogs.length === 0" class="no-logs">
+        No audit logs found for this document.
+      </div>
+      
+      <div class="audit-item" *ngFor="let log of auditLogs">
+        <div class="audit-header">
+          <span class="audit-action badge" [ngClass]="'action-' + log.action.toLowerCase()">{{ log.action }}</span>
+          <span class="audit-time">{{ log.timestamp | date:'medium' }}</span>
+        </div>
+        <div class="audit-body">
+          <p class="audit-desc">{{ log.description }}</p>
+          <p class="audit-user">by <strong>{{ log.userName }}</strong></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="loading-state">
+  <p>Loading document details...</p>
+</div>

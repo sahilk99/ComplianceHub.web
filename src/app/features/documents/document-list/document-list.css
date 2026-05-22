@@ -1,0 +1,60 @@
+.document-list-container {
+  padding: 20px;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 5px;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.page-size {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Row Highlighting */
+tr.row-overdue {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+tr.row-overdue:hover {
+  background-color: rgba(220, 53, 69, 0.2);
+}
+
+tr.row-expiring {
+  background-color: rgba(255, 193, 7, 0.1);
+}
+tr.row-expiring:hover {
+  background-color: rgba(255, 193, 7, 0.2);
+}

@@ -1,1 +1,70 @@
-<p>document-list works!</p>
+<div class="document-list-container">
+  <div class="header-actions">
+    <h2>Documents</h2>
+    <a *ngIf="isAdmin" routerLink="/documents/new" class="btn btn-primary">Create Document</a>
+  </div>
+
+  <div class="filter-bar" [formGroup]="filterForm">
+    <input type="text" formControlName="titleSearch" placeholder="Search by title..." class="form-control search-input">
+    
+    <select formControlName="category" class="form-control">
+      <option value="">All Categories</option>
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+
+    <select formControlName="status" class="form-control">
+      <option value="">All Statuses</option>
+      <option *ngFor="let stat of statuses" [value]="stat">{{ stat }}</option>
+    </select>
+
+    <button type="button" (click)="clearFilters()" class="btn btn-secondary">Clear</button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Category</th>
+          <th>Department</th>
+          <th>Expiry Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let doc of documents" [ngClass]="getRowClass(doc.status)">
+          <td>{{ doc.title }}</td>
+          <td>{{ doc.category }}</td>
+          <td>{{ doc.departmentName }}</td>
+          <td>{{ doc.expiryDate | date:'dd MMM yyyy' }}</td>
+          <td><app-status-badge [status]="doc.status"></app-status-badge></td>
+          <td class="actions-cell">
+            <a [routerLink]="['/documents', doc.id]" class="btn btn-sm btn-info">View</a>
+            <a *ngIf="isAdmin" [routerLink]="['/documents', doc.id, 'edit']" class="btn btn-sm btn-warning">Edit</a>
+            <button *ngIf="isAdmin" (click)="deleteDocument(doc.id)" class="btn btn-sm btn-danger">Delete</button>
+          </td>
+        </tr>
+        <tr *ngIf="documents.length === 0">
+          <td colspan="6" class="text-center">No documents found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-container">
+    <div class="page-size">
+      <label>Page Size: </label>
+      <select (change)="onPageSizeChange($event)" [value]="pageSize" class="form-control input-sm">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+    <div class="pagination-controls">
+      <button class="btn btn-sm btn-secondary" [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">Prev</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button class="btn btn-sm btn-secondary" [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">Next</button>
+    </div>
+  </div>
+</div>
