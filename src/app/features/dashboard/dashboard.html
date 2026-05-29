@@ -1,1 +1,90 @@
-<p>dashboard works!</p>
+<div class="dashboard-container" *ngIf="!isLoading && summary">
+  <div class="header">
+    <h2>Dashboard</h2>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="stats-grid">
+    <div class="stat-card border-blue">
+      <div class="stat-title">Total Documents</div>
+      <div class="stat-value text-blue">{{ summary.totalDocuments }}</div>
+    </div>
+    <div class="stat-card border-green">
+      <div class="stat-title">Compliant</div>
+      <div class="stat-value text-green">{{ summary.compliantCount }}</div>
+    </div>
+    <div class="stat-card border-amber">
+      <div class="stat-title">Expiring Soon</div>
+      <div class="stat-value text-amber">{{ summary.expiringSoonCount }}</div>
+    </div>
+    <div class="stat-card border-red">
+      <div class="stat-title">Overdue</div>
+      <div class="stat-value text-red">{{ summary.overdueCount }}</div>
+    </div>
+  </div>
+
+  <div class="dashboard-main">
+    <!-- Charts and Score -->
+    <div class="main-left">
+      <div class="card compliance-score-card">
+        <h3>Overall Compliance Score</h3>
+        <div class="score-circle-container">
+          <div class="score-circle" [ngClass]="getComplianceColorClass(summary.overallCompliancePercentage)">
+            <span class="score-text">{{ summary.overallCompliancePercentage }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <h3>Department Statistics</h3>
+        <div class="chart-container" *ngIf="chartData.length > 0">
+          <ngx-charts-bar-vertical-2d
+            [view]="view"
+            [scheme]="colorScheme"
+            [results]="chartData"
+            [gradient]="gradient"
+            [xAxis]="showXAxis"
+            [yAxis]="showYAxis"
+            [legend]="showLegend"
+            [showXAxisLabel]="showXAxisLabel"
+            [showYAxisLabel]="showYAxisLabel"
+            [xAxisLabel]="xAxisLabel"
+            [yAxisLabel]="yAxisLabel">
+          </ngx-charts-bar-vertical-2d>
+        </div>
+        <div *ngIf="chartData.length === 0" class="no-data">
+          No department statistics available.
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="main-right">
+      <div class="card activity-card">
+        <h3>Recent Activity</h3>
+        <div class="activity-feed">
+          <div class="activity-item" *ngFor="let activity of summary.recentActivity">
+            <div class="activity-badge" [ngClass]="getActionColor(activity.action)">
+              {{ activity.action }}
+            </div>
+            <div class="activity-content">
+              <p class="activity-desc">{{ activity.description }}</p>
+              <div class="activity-meta">
+                <span>by {{ activity.userName }}</span>
+                <span>•</span>
+                <span>{{ activity.timestamp | date:'short' }}</span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!summary.recentActivity || summary.recentActivity.length === 0" class="no-data">
+            No recent activity found.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-state" *ngIf="isLoading">
+  <p>Loading Dashboard...</p>
+</div>

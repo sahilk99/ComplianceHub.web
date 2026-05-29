@@ -1,6 +1,11 @@
 <header class="navbar">
-  <div class="page-title">
-    <h2>{{ pageTitle }}</h2>
+  <div class="left-section">
+    <button class="icon-btn hamburger-btn" (click)="toggleSidebar.emit()" aria-label="Toggle Sidebar">
+      <span class="icon">☰</span>
+    </button>
+    <div class="page-title">
+      <h2>{{ pageTitle }}</h2>
+    </div>
   </div>
 
   <div class="navbar-actions">
@@ -20,10 +25,10 @@
         </div>
 
         <div class="dropdown-body">
-          <div class="notification-item" *ngFor="let notif of notifications" [class.unread]="!notif.isRead">
+          <div class="notification-item" *ngFor="let notif of notifications" [class.unread]="!notif.isRead" (click)="onNotificationClick(notif)">
             <div class="notif-content">
               <p class="message">{{ notif.message }}</p>
-              <span class="time">{{ notif.timeAgo }}</span>
+              <span class="time">{{ getTimeAgo(notif.createdAt) }}</span>
             </div>
             <div class="unread-dot" *ngIf="!notif.isRead"></div>
           </div>

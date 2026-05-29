@@ -1,1 +1,93 @@
-<p>audit-logs works!</p>
+<div class="audit-logs-container">
+  <div class="header">
+    <h2>Audit Logs</h2>
+  </div>
+
+  <div class="filter-bar card" [formGroup]="filterForm">
+    <div class="filter-group">
+      <label>From Date</label>
+      <input type="date" formControlName="fromDate" class="form-control">
+    </div>
+    <div class="filter-group">
+      <label>To Date</label>
+      <input type="date" formControlName="toDate" class="form-control">
+    </div>
+    
+    <div class="filter-group">
+      <label>Action</label>
+      <select formControlName="action" class="form-control">
+        <option value="">All Actions</option>
+        <option *ngFor="let act of actions" [value]="act">{{ act }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Entity Type</label>
+      <select formControlName="entityType" class="form-control">
+        <option value="">All Entities</option>
+        <option *ngFor="let et of entityTypes" [value]="et">{{ et }}</option>
+      </select>
+    </div>
+
+    <div class="filter-actions">
+      <button type="button" (click)="applyFilters()" class="btn btn-primary">Apply Filters</button>
+      <button type="button" (click)="clearFilters()" class="btn btn-secondary">Clear</button>
+    </div>
+  </div>
+
+  <div class="card table-card">
+    <div class="table-header">
+      <div class="records-info">
+        Showing {{ (currentPage - 1) * pageSize + (logs.length > 0 ? 1 : 0) }} - {{ Math.min(currentPage * pageSize, totalCount) || 0 }} of {{ totalCount }} records
+      </div>
+      <div class="page-size">
+        <label>Page Size: </label>
+        <select (change)="onPageSizeChange($event)" [value]="pageSize" class="form-control input-sm">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>User</th>
+            <th>Action</th>
+            <th>Entity Type</th>
+            <th>Entity ID</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td>{{ log.timestamp | date:'dd MMM yyyy HH:mm' }}</td>
+            <td>{{ log.userName }}</td>
+            <td>
+              <span class="badge" [ngClass]="getActionColor(log.action)">{{ log.action }}</span>
+            </td>
+            <td>{{ log.entityType }}</td>
+            <td>
+              <a href="javascript:void(0)" (click)="navigateToEntity(log.entityType, log.entityId)" class="entity-link">
+                {{ log.entityId }}
+              </a>
+            </td>
+            <td>{{ log.description }}</td>
+          </tr>
+          <tr *ngIf="logs.length === 0">
+            <td colspan="6" class="text-center no-data">No audit logs found matching criteria.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination-controls" *ngIf="totalPages > 1">
+      <button class="btn btn-sm btn-secondary" [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">Prev</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button class="btn btn-sm btn-secondary" [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">Next</button>
+    </div>
+  </div>
+</div>

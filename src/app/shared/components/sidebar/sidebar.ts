@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
@@ -12,6 +12,7 @@ import { User } from '../../../core/models/user.model';
   styleUrls: ['./sidebar.scss']
 })
 export class SidebarComponent {
+  @Input() isCollapsed: boolean = false;
   private authService = inject(AuthService);
   private router = inject(Router);
 

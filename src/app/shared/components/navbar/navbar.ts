@@ -1,12 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-interface Notification {
-  id: number;
-  message: string;
-  timeAgo: string;
-  isRead: boolean;
-}
+import { Router } from '@angular/router';
+import { NotificationService, AppNotification } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,27 +10,79 @@ interface Notification {
   templateUrl: './navbar.html',
   styleUrls: ['./navbar.scss']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   @Input() pageTitle: string = 'Dashboard';
+  @Output() toggleSidebar = new EventEmitter<void>();
+
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
 
   isNotificationOpen = false;
-  
-  notifications: Notification[] = [
-    { id: 1, message: 'New audit assigned to you.', timeAgo: '5 mins ago', isRead: false },
-    { id: 2, message: 'Document "Q1 Report" was approved.', timeAgo: '2 hours ago', isRead: false },
-    { id: 3, message: 'System maintenance scheduled.', timeAgo: '1 day ago', isRead: true }
-  ];
+  notifications: AppNotification[] = [];
+  unreadCount = 0;
 
-  get unreadCount(): number {
-    return this.notifications.filter(n => !n.isRead).length;
+  ngOnInit(): void {
+    this.notificationService.unreadCount$.subscribe(count => {
+      this.unreadCount = count;
+    });
   }
 
   toggleNotifications(): void {
     this.isNotificationOpen = !this.isNotificationOpen;
+    if (this.isNotificationOpen) {
+      this.loadNotifications();
+    }
+  }
+
+  loadNotifications(): void {
+    this.notificationService.getNotifications().subscribe({
+      next: (data) => this.notifications = data,
+      error: (err) => console.error('Failed to load notifications', err)
+    });
   }
 
   markAllAsRead(): void {
-    this.notifications = this.notifications.map(n => ({ ...n, isRead: true }));
+    this.notificationService.markAllAsRead().subscribe({
+      next: () => {
+        this.notifications.forEach(n => n.isRead = true);
+        this.isNotificationOpen = false;
+      },
+      error: (err) => console.error('Failed to mark all as read', err)
+    });
+  }
+
+  onNotificationClick(notification: AppNotification): void {
+    if (!notification.isRead) {
+      this.notificationService.markAsRead(notification.id).subscribe({
+        next: () => {
+          notification.isRead = true;
+          this.navigateToDocument(notification.documentId);
+        },
+        error: (err) => console.error('Failed to mark notification as read', err)
+      });
+    } else {
+      this.navigateToDocument(notification.documentId);
+    }
+  }
+
+  private navigateToDocument(documentId?: number): void {
     this.isNotificationOpen = false;
+    if (documentId) {
+      this.router.navigate(['/documents', documentId]);
+    }
+  }
+
+  getTimeAgo(dateString: string): string {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minutes ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours} hours ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays} days ago`;
   }
 }
