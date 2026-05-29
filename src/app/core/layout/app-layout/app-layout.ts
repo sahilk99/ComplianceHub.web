@@ -14,6 +14,7 @@ import { NavbarComponent } from '../../../shared/components/navbar/navbar';
 })
 export class AppLayoutComponent {
   pageTitle = 'Dashboard';
+  isSidebarCollapsed = false;
 
   constructor(private router: Router) {
     this.router.events.pipe(
@@ -35,5 +36,9 @@ export class AppLayoutComponent {
     } else {
       this.pageTitle = 'ComplianceHub';
     }
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
 }

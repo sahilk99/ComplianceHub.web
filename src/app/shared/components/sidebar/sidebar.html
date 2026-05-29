@@ -1,4 +1,4 @@
-<aside class="sidebar">
+<aside class="sidebar" [class.collapsed]="isCollapsed">
   <div class="sidebar-header">
     <div class="logo">
       <span class="logo-icon">C</span>
@@ -36,6 +36,7 @@
       <div class="avatar">{{ currentUser.name.charAt(0) | uppercase }}</div>
       <div class="details">
         <span class="name">{{ currentUser.name }}</span>
+        <span class="email">{{ currentUser.email }}</span>
         <span class="role-badge" [ngClass]="userRole.toLowerCase()">{{ userRole }}</span>
       </div>
     </div>

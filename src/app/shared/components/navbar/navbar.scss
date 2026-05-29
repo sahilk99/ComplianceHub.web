@@ -17,6 +17,12 @@ $text-secondary: #64748b;
   top: 0;
   z-index: 50;
 
+  .left-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
   .page-title h2 {
     margin: 0;
     font-size: 1.5rem;

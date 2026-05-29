@@ -1,8 +1,8 @@
-<div class="app-layout">
-  <app-sidebar></app-sidebar>
+<div class="app-layout" [class.sidebar-collapsed]="isSidebarCollapsed">
+  <app-sidebar [isCollapsed]="isSidebarCollapsed"></app-sidebar>
   
   <div class="main-content">
-    <app-navbar [pageTitle]="pageTitle"></app-navbar>
+    <app-navbar [pageTitle]="pageTitle" (toggleSidebar)="toggleSidebar()"></app-navbar>
     
     <main class="content-area">
       <router-outlet></router-outlet>
